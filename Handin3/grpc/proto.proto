@@ -5,7 +5,7 @@ package ChittyChat;
 option go_package = "grpc/proto";
 
 service ChittyChat {
-    rpc Publish(stream ClientMessage) returns (stream ServiceBroadcast);
+    rpc Broadcast(stream ClientMessage) returns (stream ClientMessage);
 }
 
 message ClientMessage {
@@ -14,8 +14,3 @@ message ClientMessage {
   int64 timestamp = 3;
 }
 
-message ServiceBroadcast {
-  string serverName = 1;
-  string time = 2;
-  int64 timestamp = 3;
-}

@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ChittyChat_Publish_FullMethodName = "/ChittyChat.ChittyChat/Publish"
+	ChittyChat_Broadcast_FullMethodName = "/ChittyChat.ChittyChat/Broadcast"
 )
 
 // ChittyChatClient is the client API for ChittyChat service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChittyChatClient interface {
-	Publish(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_PublishClient, error)
+	Broadcast(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_BroadcastClient, error)
 }
 
 type chittyChatClient struct {
@@ -37,31 +37,31 @@ func NewChittyChatClient(cc grpc.ClientConnInterface) ChittyChatClient {
 	return &chittyChatClient{cc}
 }
 
-func (c *chittyChatClient) Publish(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_PublishClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ChittyChat_ServiceDesc.Streams[0], ChittyChat_Publish_FullMethodName, opts...)
+func (c *chittyChatClient) Broadcast(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_BroadcastClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ChittyChat_ServiceDesc.Streams[0], ChittyChat_Broadcast_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &chittyChatPublishClient{stream}
+	x := &chittyChatBroadcastClient{stream}
 	return x, nil
 }
 
-type ChittyChat_PublishClient interface {
+type ChittyChat_BroadcastClient interface {
 	Send(*ClientMessage) error
-	Recv() (*ServiceBroadcast, error)
+	Recv() (*ClientMessage, error)
 	grpc.ClientStream
 }
 
-type chittyChatPublishClient struct {
+type chittyChatBroadcastClient struct {
 	grpc.ClientStream
 }
 
-func (x *chittyChatPublishClient) Send(m *ClientMessage) error {
+func (x *chittyChatBroadcastClient) Send(m *ClientMessage) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *chittyChatPublishClient) Recv() (*ServiceBroadcast, error) {
-	m := new(ServiceBroadcast)
+func (x *chittyChatBroadcastClient) Recv() (*ClientMessage, error) {
+	m := new(ClientMessage)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (x *chittyChatPublishClient) Recv() (*ServiceBroadcast, error) {
 // All implementations must embed UnimplementedChittyChatServer
 // for forward compatibility
 type ChittyChatServer interface {
-	Publish(ChittyChat_PublishServer) error
+	Broadcast(ChittyChat_BroadcastServer) error
 	mustEmbedUnimplementedChittyChatServer()
 }
 
@@ -80,8 +80,8 @@ type ChittyChatServer interface {
 type UnimplementedChittyChatServer struct {
 }
 
-func (UnimplementedChittyChatServer) Publish(ChittyChat_PublishServer) error {
-	return status.Errorf(codes.Unimplemented, "method Publish not implemented")
+func (UnimplementedChittyChatServer) Broadcast(ChittyChat_BroadcastServer) error {
+	return status.Errorf(codes.Unimplemented, "method Broadcast not implemented")
 }
 func (UnimplementedChittyChatServer) mustEmbedUnimplementedChittyChatServer() {}
 
@@ -96,25 +96,25 @@ func RegisterChittyChatServer(s grpc.ServiceRegistrar, srv ChittyChatServer) {
 	s.RegisterService(&ChittyChat_ServiceDesc, srv)
 }
 
-func _ChittyChat_Publish_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ChittyChatServer).Publish(&chittyChatPublishServer{stream})
+func _ChittyChat_Broadcast_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ChittyChatServer).Broadcast(&chittyChatBroadcastServer{stream})
 }
 
-type ChittyChat_PublishServer interface {
-	Send(*ServiceBroadcast) error
+type ChittyChat_BroadcastServer interface {
+	Send(*ClientMessage) error
 	Recv() (*ClientMessage, error)
 	grpc.ServerStream
 }
 
-type chittyChatPublishServer struct {
+type chittyChatBroadcastServer struct {
 	grpc.ServerStream
 }
 
-func (x *chittyChatPublishServer) Send(m *ServiceBroadcast) error {
+func (x *chittyChatBroadcastServer) Send(m *ClientMessage) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *chittyChatPublishServer) Recv() (*ClientMessage, error) {
+func (x *chittyChatBroadcastServer) Recv() (*ClientMessage, error) {
 	m := new(ClientMessage)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -131,8 +131,8 @@ var ChittyChat_ServiceDesc = grpc.ServiceDesc{
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "Publish",
-			Handler:       _ChittyChat_Publish_Handler,
+			StreamName:    "Broadcast",
+			Handler:       _ChittyChat_Broadcast_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
