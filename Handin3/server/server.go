@@ -15,25 +15,30 @@ type Server struct {
     name string
 	proto.UnimplementedChittyChatServer
 	port int
+    streams []proto.ChittyChat_BroadcastServer
 }
 
 var port = flag.Int("port", 0, "server port number")
 
 func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
+    
+    s.streams = append(s.streams, msgStream)
+    go s.logOn(msgStream)
+    go s.broadcastStreams()
     // get all the messages from the stream
-    for {
-        msg, err := msgStream.Recv()
-        if err == io.EOF {
-            break
-        }
-        if err != nil {
-            return err
-        }
-        if err := msgStream.Send(msg); err != nil {
-            return err
-        }
+    // for {
+    //     msg, err := msgStream.Recv()
+    //     if err == io.EOF {
+    //         break
+    //     }
+    //     if err != nil {
+    //         return err
+    //     }
+        // if err := msgStream.Send(msg); err != nil {
+        //     return err
+        // }
         
-        }
+        
 	// every time we get a message from a client, we should immediately broadcast it to all clients (goroutine)
 
 	// how does server know a client has joined? 
@@ -43,6 +48,59 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
 
     return nil
 }
+
+func (s *Server) broadcastStreams() error {
+    for _, stream := range s.streams {
+        for{
+            msg, err := stream.Recv()
+                if err == io.EOF {
+                    break
+                }
+                if err != nil {
+                    return err
+                }
+                if err := stream.Send(msg); err != nil {
+                    return err
+                }
+                log.Printf("vi sender %s", msg.GetMessage())
+            }
+    }
+    return nil
+}
+
+func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
+    log.Printf("start logon")
+    for{
+    msg, err := recv.Recv()
+    if err == io.EOF {
+        break
+    }
+    
+    
+    for _, stream := range s.streams {
+        
+        stream.Send(&proto.ClientMessage{
+			ClientId: int64(msg.GetClientId()),
+			Message: string("has joined"),
+			Timestamp: int64(msg.GetTimestamp()),
+		})
+    }
+    
+}
+ return nil
+    
+}
+
+func (s *Server) logOff(msg proto.ClientMessage){
+    for _, stream := range s.streams {
+        stream.Send(&proto.ClientMessage{
+			ClientId: int64(msg.GetClientId()),
+			Message: string("has left"),
+			Timestamp: int64(msg.GetTimestamp()),
+		})
+    }
+}
+
 
 func newServer(server *Server) {
     ChittyChat := grpc.NewServer()
