@@ -25,12 +25,14 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
     
     s.streams = append(s.streams, msgStream)
     
-    s.logOn(msgStream)
+    _, clientid := s.logOn(msgStream)
     go s.receive(msgStream)
+
+    <-msgStream.Context().Done()
     
-    for {
-        
-    }
+    s.logOff(clientid, msgStream)
+    
+    return nil
 }
 
 func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
@@ -70,11 +72,11 @@ func (s *Server) broadcastStreams(msg *proto.ClientMessage) error {
     return nil
 }
 
-func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
+func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) (error, int){
     log.Printf("start logon")
     msg, err := recv.Recv()
     if err == io.EOF {
-        return err
+        return err, -1
     }
 
     if(msg.Timestamp > s.Timestamp){
@@ -94,18 +96,32 @@ func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
     }
     
 
- return nil
+ return nil, int(msg.ClientId)
     
 }
 
-func (s *Server) logOff(msg proto.ClientMessage){
+func (s *Server) logOff(clientid int, stream proto.ChittyChat_BroadcastServer){
+    s.streams = delete(s.streams, stream)
     for _, stream := range s.streams {
+        s.Timestamp += 1
         stream.Send(&proto.ClientMessage{
-			ClientId: int64(msg.GetClientId()),
+			ClientId: int64(clientid),
 			Message: string("has left"),
-			Timestamp: int64(msg.GetTimestamp()),
+			Timestamp: int64(s.Timestamp),
 		})
     }
+}
+
+func delete(slice []proto.ChittyChat_BroadcastServer, stream proto.ChittyChat_BroadcastServer) []proto.ChittyChat_BroadcastServer{
+    var index int 
+    for i, element := range slice{
+        if (element == stream){
+            index = i
+        }
+    }
+
+    return append(slice[:index], slice[index+1:]...)
+
 }
 
 
