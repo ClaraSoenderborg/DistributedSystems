@@ -25,12 +25,10 @@ var (
 
 func publishMessage(client *Client){
 	serverConnection, _ := connectToServer()
-
+	stream, _ := serverConnection.Broadcast(context.Background())
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		input := scanner.Text()
-	
-		stream, err := serverConnection.Broadcast(context.Background())
+		input := scanner.Text()	
 
 		stream.Send(&proto.ClientMessage{
 			ClientId: int64(client.id),

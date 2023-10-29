@@ -45,7 +45,9 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
 
     //ack := proto.ServiceBroadcast// make an instance of your return type
     //msgStream.SendAndClose(ack)
-
+    for {
+        
+    }
     return nil
 }
 
@@ -70,15 +72,12 @@ func (s *Server) broadcastStreams() error {
 
 func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
     log.Printf("start logon")
-    for{
     msg, err := recv.Recv()
     if err == io.EOF {
-        break
+        return err
     }
     
-    
     for _, stream := range s.streams {
-        
         stream.Send(&proto.ClientMessage{
 			ClientId: int64(msg.GetClientId()),
 			Message: string("has joined"),
@@ -86,7 +85,7 @@ func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
 		})
     }
     
-}
+
  return nil
     
 }
