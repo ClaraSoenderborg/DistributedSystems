@@ -40,16 +40,18 @@ func publishMessage(client *Client){
 	scanner := bufio.NewScanner(os.Stdin)
 	
 	for scanner.Scan() {
-		input := scanner.Text()	
-		client.Timestamp += 1
-		stream.Send(&proto.ClientMessage{
-			ClientId: int64(client.id),
-			Message: string(input),
-			Timestamp: int64(client.Timestamp),
-		})
-
+		input := scanner.Text()
+		if (len(input) > 128){
+			log.Printf("Message is too long, try again")
+		} else {
+			client.Timestamp += 1
+			stream.Send(&proto.ClientMessage{
+				ClientId: int64(client.id),
+				Message: string(input),
+				Timestamp: int64(client.Timestamp),
+			})
+		}	
 	}
-
 }
 
 func (client *Client) receive(stream proto.ChittyChat_BroadcastClient){
