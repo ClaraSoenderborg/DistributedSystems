@@ -49,7 +49,7 @@ func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
         }else{
             s.Timestamp += 1
         }
-        log.Printf("Serverlog: User %d @%d :%s", msg.ClientId, s.Timestamp, msg.Message)
+        log.Printf("Serverlog received: User %d @%d :%s", msg.ClientId, s.Timestamp, msg.Message)
         go s.broadcastStreams(msg)
     }
     return nil
@@ -66,8 +66,6 @@ func (s *Server) broadcastStreams(msg *proto.ClientMessage) error {
             }); err != nil {
                 return err
             }
-            
-            log.Printf("vi sender %s fra user %d", msg.GetMessage(), msg.GetClientId())
         }
     return nil
 }
