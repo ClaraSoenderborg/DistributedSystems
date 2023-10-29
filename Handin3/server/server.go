@@ -24,7 +24,7 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
     
     s.streams = append(s.streams, msgStream)
     go s.logOn(msgStream)
-    go s.broadcastStreams()
+    go s.receive(msgStream)
     // get all the messages from the stream
     // for {
     //     msg, err := msgStream.Recv()
@@ -51,22 +51,29 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
     return nil
 }
 
-func (s *Server) broadcastStreams() error {
-    for _, stream := range s.streams {
-        for{
-            msg, err := stream.Recv()
-                if err == io.EOF {
-                    break
-                }
-                if err != nil {
-                    return err
-                }
-                if err := stream.Send(msg); err != nil {
-                    return err
-                }
-                log.Printf("vi sender %s", msg.GetMessage())
-            }
+func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
+    for {
+        msg, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            return err
+        }
+        go s.broadcastStreams(msg)
     }
+    return nil
+    
+}
+
+func (s *Server) broadcastStreams(msg *proto.ClientMessage) error {
+        for _, stream := range s.streams {
+            if err := stream.Send(msg); err != nil {
+                return err
+            }
+            log.Printf("vi sender %s fra user %d", msg.GetMessage(), msg.GetClientId())
+            
+        }
     return nil
 }
 

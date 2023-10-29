@@ -24,9 +24,14 @@ var (
 )
 
 func publishMessage(client *Client){
+	
 	serverConnection, _ := connectToServer()
 	stream, _ := serverConnection.Broadcast(context.Background())
+	
+	go receive(stream)
+	
 	scanner := bufio.NewScanner(os.Stdin)
+	
 	for scanner.Scan() {
 		input := scanner.Text()	
 
@@ -36,7 +41,13 @@ func publishMessage(client *Client){
 			Timestamp: int64(1),
 		})
 
-		in, err := stream.Recv()
+	}
+
+}
+
+func receive(stream proto.ChittyChat_BroadcastClient){
+	for{
+	in, err := stream.Recv()
 
 		if err != nil {
 			log.Printf(err.Error())
@@ -44,7 +55,6 @@ func publishMessage(client *Client){
 			log.Printf("User %d @%d :%s", in.ClientId, in.Timestamp, in.Message)
 		}
 	}
-	
 }
 
 func connectToServer() (proto.ChittyChatClient, error) {
