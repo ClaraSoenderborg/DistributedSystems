@@ -16,6 +16,7 @@ type Server struct {
 	proto.UnimplementedChittyChatServer
 	port int
     streams []proto.ChittyChat_BroadcastServer
+    Timestamp int64
 }
 
 var port = flag.Int("port", 0, "server port number")
@@ -30,7 +31,6 @@ func (s *Server) Broadcast(msgStream proto.ChittyChat_BroadcastServer) error {
     for {
         
     }
-    return nil
 }
 
 func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
@@ -42,6 +42,12 @@ func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
         if err != nil {
             return err
         }
+        if(msg.Timestamp > s.Timestamp){
+            s.Timestamp = msg.Timestamp+1
+        }else{
+            msg.Timestamp += 1
+        }
+        
         go s.broadcastStreams(msg)
     }
     return nil
@@ -50,11 +56,16 @@ func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
 
 func (s *Server) broadcastStreams(msg *proto.ClientMessage) error {
         for _, stream := range s.streams {
-            if err := stream.Send(msg); err != nil {
+            s.Timestamp += 1
+            if err := stream.Send(&proto.ClientMessage{
+                ClientId: int64(msg.GetClientId()),
+                Message: string(msg.GetMessage()),
+                Timestamp: int64(s.Timestamp),
+            }); err != nil {
                 return err
             }
-            log.Printf("vi sender %s fra user %d", msg.GetMessage(), msg.GetClientId())
             
+            log.Printf("vi sender %s fra user %d", msg.GetMessage(), msg.GetClientId())
         }
     return nil
 }
@@ -65,7 +76,13 @@ func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
     if err == io.EOF {
         return err
     }
-    
+
+    if(msg.Timestamp > s.Timestamp){
+        s.Timestamp = msg.Timestamp+1
+    }else{
+        msg.Timestamp += 1
+    }
+
     for _, stream := range s.streams {
         stream.Send(&proto.ClientMessage{
 			ClientId: int64(msg.GetClientId()),
@@ -94,7 +111,7 @@ func newServer(server *Server) {
     ChittyChat := grpc.NewServer()
 
     listener, err := net.Listen("tcp", ":"+strconv.Itoa(server.port))
-
+    server.Timestamp = 0
     if err != nil {
 		log.Fatalf("Could not create the server %v", err)
 	}

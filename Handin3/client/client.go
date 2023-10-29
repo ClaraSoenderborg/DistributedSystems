@@ -16,6 +16,7 @@ import (
 
 type Client struct {
 	id int
+	Timestamp int64
 }
 
 var (
@@ -27,32 +28,43 @@ func publishMessage(client *Client){
 	
 	serverConnection, _ := connectToServer()
 	stream, _ := serverConnection.Broadcast(context.Background())
-	
-	go receive(stream)
+	client.Timestamp=1 //timestamp is set to 1 as it is the first action we do
+	stream.Send(&proto.ClientMessage{
+		ClientId: int64(client.id),
+		Message: string(""),
+		Timestamp: int64(client.Timestamp), 
+	})
+
+	go client.receive(stream)
 	
 	scanner := bufio.NewScanner(os.Stdin)
 	
 	for scanner.Scan() {
 		input := scanner.Text()	
-
+		client.Timestamp += 1
 		stream.Send(&proto.ClientMessage{
 			ClientId: int64(client.id),
 			Message: string(input),
-			Timestamp: int64(1),
+			Timestamp: int64(client.Timestamp),
 		})
 
 	}
 
 }
 
-func receive(stream proto.ChittyChat_BroadcastClient){
+func (client *Client) receive(stream proto.ChittyChat_BroadcastClient){
 	for{
 	in, err := stream.Recv()
 
 		if err != nil {
 			log.Printf(err.Error())
 		} else {
-			log.Printf("User %d @%d :%s", in.ClientId, in.Timestamp, in.Message)
+			if(in.Timestamp > client.Timestamp){
+				client.Timestamp = in.Timestamp+1
+			}else{
+				client.Timestamp += 1
+			}
+			log.Printf("User %d @%d :%s", in.ClientId, client.Timestamp, in.Message)
 		}
 	}
 }
