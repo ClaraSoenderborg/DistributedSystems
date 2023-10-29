@@ -45,9 +45,9 @@ func (s *Server) receive(stream proto.ChittyChat_BroadcastServer) error {
         if(msg.Timestamp > s.Timestamp){
             s.Timestamp = msg.Timestamp+1
         }else{
-            msg.Timestamp += 1
+            s.Timestamp += 1
         }
-        
+        log.Printf("Serverlog: User %d @%d :%s", msg.ClientId, s.Timestamp, msg.Message)
         go s.broadcastStreams(msg)
     }
     return nil
@@ -80,14 +80,16 @@ func (s *Server) logOn(recv proto.ChittyChat_BroadcastServer) error{
     if(msg.Timestamp > s.Timestamp){
         s.Timestamp = msg.Timestamp+1
     }else{
-        msg.Timestamp += 1
+        s.Timestamp += 1
     }
 
+
     for _, stream := range s.streams {
+        s.Timestamp += 1
         stream.Send(&proto.ClientMessage{
 			ClientId: int64(msg.GetClientId()),
 			Message: string("has joined"),
-			Timestamp: int64(msg.GetTimestamp()),
+			Timestamp: int64(s.Timestamp),
 		})
     }
     
