@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package mutex;
+
+option go_package = "grpc/proto";
+
+message Request{
+    int64 timestamp = 1;
+    int64 clientID = 2;
+}
+
+message Reply{
+    int64 timestamp = 1;
+    int64 clientID = 2;
+}
+
+service mutex{
+    rpc mutex(Request) returns (Reply){}
+}
