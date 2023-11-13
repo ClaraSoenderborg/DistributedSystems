@@ -143,7 +143,6 @@ func (n *Node) enter(){
 	
 
 	for _, v := range n.ports{
-		log.Printf("sending request to port %d", v)
 		reply, err := v.Mutex(context.Background(), &proto.Request{
 			Timestamp: int64(n.timestamp),
 			ClientID: int64(n.id),
