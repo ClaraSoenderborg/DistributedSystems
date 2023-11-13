@@ -39,7 +39,11 @@ func main() {
 	}
 
 	// Start the server
+	
 	go startNode(node)
+
+	go runNode(node)
+
 
 	// Keep the server running until it is manually quit
 	for {
@@ -48,7 +52,7 @@ func main() {
 }
 
 func startNode(n *Node) {
-
+	log.Printf("startnode called")
 	// Create a new grpc server
 	grpcServer := grpc.NewServer()
 
@@ -61,19 +65,27 @@ func startNode(n *Node) {
 	log.Printf("Started server at port: %d\n", n.port)
 
 	// Register the grpc server and serve its listener
+	proto.RegisterMutexServer(grpcServer, n)
 	serveError := grpcServer.Serve(listener)
 	if serveError != nil {
 		log.Fatalf("Could not serve listener")
 	}
+	log.Printf("serveError")
 
+
+}
+
+func runNode(n *Node) {
 	n.state = "RELEASED"
 	n.timestamp = 0
 	n.queue = make(chan int)
 
 	scanner := bufio.NewScanner(os.Stdin)
-	
+	log.Printf("new scanner")
 	for scanner.Scan(){
+		log.Printf("started scan")
 		input := scanner.Text()
+		log.Printf(input)
 		if (input == "start"){
 			n.connectToPeer()
 
@@ -84,11 +96,6 @@ func startNode(n *Node) {
 			}
 		}
 	}
-
-
-	
-	
-
 }
 
 func (n *Node)connectToPeer() error {
@@ -111,12 +118,14 @@ func (n *Node)connectToPeer() error {
 
 //This is the recieving function
 func (n *Node) mutex(ctx context.Context, request proto.Request)(*proto.Reply, error){
+	log.Printf("we got a request from node nr. %d", request.ClientID)
 	n.timestamp =+1
 
 	if (n.state == "HELD" || (n.state == "WANTED" && (n.timestamp < int(request.Timestamp)))){
 		<- n.queue
 
 	} 
+	log.Printf("we are now sending a reply back to node nr. %d", request.ClientID)
 	return &proto.Reply{
 		Timestamp: int64(n.timestamp),
 		ClientID: int64(n.id),
