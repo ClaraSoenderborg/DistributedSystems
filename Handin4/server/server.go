@@ -52,7 +52,6 @@ func main() {
 }
 
 func startNode(n *Node) {
-	log.Printf("startnode called")
 	// Create a new grpc server
 	grpcServer := grpc.NewServer()
 
@@ -70,7 +69,6 @@ func startNode(n *Node) {
 	if serveError != nil {
 		log.Fatalf("Could not serve listener")
 	}
-	log.Printf("serveError")
 
 
 }
@@ -81,17 +79,17 @@ func runNode(n *Node) {
 	n.queue = make(chan int)
 
 	scanner := bufio.NewScanner(os.Stdin)
-	log.Printf("new scanner")
 	for scanner.Scan(){
-		log.Printf("started scan")
 		input := scanner.Text()
 		log.Printf(input)
 		if (input == "start"){
 			n.connectToPeer()
 
+			time.Sleep(time.Duration(10*time.Second))
+
 			y:=rand.Intn(10)
+			log.Printf("Random number: %d",y)
 			if(y>2){
-				log.Printf("Random number: %d",y)
 				n.enter()
 			}
 		}
@@ -99,8 +97,7 @@ func runNode(n *Node) {
 }
 
 func (n *Node)connectToPeer() error {
-	log.Printf("Hey girls, i want to connect")
-	for i := 5000; i <= 5005; i++{
+	for i := 5001; i <= 5003; i++{
 		if(*port != i){
 			// Dial the server at the specified port.
 			conn, err := grpc.Dial("localhost:"+strconv.Itoa(i), grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -117,14 +114,20 @@ func (n *Node)connectToPeer() error {
 } 
 
 //This is the recieving function
-func (n *Node) mutex(ctx context.Context, request proto.Request)(*proto.Reply, error){
+func (n *Node) Mutex(ctx context.Context, request *proto.Request)(*proto.Reply, error){
 	log.Printf("we got a request from node nr. %d", request.ClientID)
 	n.timestamp =+1
 
 	if (n.state == "HELD" || (n.state == "WANTED" && (n.timestamp < int(request.Timestamp)))){
+		log.Printf("request from node nr. %d is in queue", request.ClientID )
 		<- n.queue
 
 	} 
+	if(request.Timestamp > int64(n.timestamp)){
+		n.timestamp = int(request.Timestamp +1)
+	}else{
+		n.timestamp += 1
+	}
 	log.Printf("we are now sending a reply back to node nr. %d", request.ClientID)
 	return &proto.Reply{
 		Timestamp: int64(n.timestamp),
@@ -137,20 +140,31 @@ func (n *Node) enter(){
 	time.Sleep(waittime)
 	n.state = "WANTED"
 	n.timestamp =+1
+	
 
 	for _, v := range n.ports{
-		v.Mutex(context.Background(), &proto.Request{
+		log.Printf("sending request to port %d", v)
+		reply, err := v.Mutex(context.Background(), &proto.Request{
 			Timestamp: int64(n.timestamp),
 			ClientID: int64(n.id),
 		})
+		if (err != nil) {
+			log.Printf(err.Error())
+		} 
+		log.Printf("we got reply from node nr %d", reply.ClientID)
+		
 	}
+	
+		n.state = "HELD"
+		n.exit()
+	
 
-	n.state = "HELD"
-	n.exit()
+	
 }
 
 func (n *Node) exit(){
 	log.Printf("I am node nr.%d and i am doing a critical thing", n.id)
+	time.Sleep(time.Duration(3*time.Second))
 	n.state = "RELEASED"
 	n.timestamp =+1
 
