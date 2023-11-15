@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package handin5;
+
+option go_package = "grpc/proto";
+
+message bidRequest{
+    int64 clientid = 1;
+    int64 bid = 2;
+}
+
+message resultRequest{
+    int64 clientid = 1;
+}
+
+message outcomeResponse{
+    int64 highestBid = 1;
+    int64 clientid = 2;
+    string message = 3;
+}
+
+message bidAck{
+    string outcome = 1;
+}
+
+
+message electionRequest{
+
+}
+
+message alive{
+
+}
+
+message victoryMessage {
+
+}
+
+service auction{
+    rpc bid(bidRequest) returns (bidAck);
+    rpc result(resultRequest) returns (outcomeResponse);
+    rpc election(electionRequest) returns (alive);
+    rpc victory(victoryMessage) returns (alive);
+    rpc doElection(electionWarning) returns (empty);
+}
+
+
+    
+message electionWarning{
+
+}
+
+message empty {
+
+}
