@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Auction_Bid_FullMethodName        = "/handin5.auction/bid"
-	Auction_Result_FullMethodName     = "/handin5.auction/result"
-	Auction_Election_FullMethodName   = "/handin5.auction/election"
-	Auction_Victory_FullMethodName    = "/handin5.auction/victory"
-	Auction_DoElection_FullMethodName = "/handin5.auction/doElection"
+	Auction_Bid_FullMethodName         = "/handin5.auction/bid"
+	Auction_Result_FullMethodName      = "/handin5.auction/result"
+	Auction_Election_FullMethodName    = "/handin5.auction/election"
+	Auction_Victory_FullMethodName     = "/handin5.auction/victory"
+	Auction_DoElection_FullMethodName  = "/handin5.auction/doElection"
+	Auction_InternalBid_FullMethodName = "/handin5.auction/internalBid"
 )
 
 // AuctionClient is the client API for Auction service.
@@ -35,6 +36,7 @@ type AuctionClient interface {
 	Election(ctx context.Context, in *ElectionRequest, opts ...grpc.CallOption) (*Alive, error)
 	Victory(ctx context.Context, in *VictoryMessage, opts ...grpc.CallOption) (*Alive, error)
 	DoElection(ctx context.Context, in *ElectionWarning, opts ...grpc.CallOption) (*Empty, error)
+	InternalBid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*BidAck, error)
 }
 
 type auctionClient struct {
@@ -90,6 +92,15 @@ func (c *auctionClient) DoElection(ctx context.Context, in *ElectionWarning, opt
 	return out, nil
 }
 
+func (c *auctionClient) InternalBid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*BidAck, error) {
+	out := new(BidAck)
+	err := c.cc.Invoke(ctx, Auction_InternalBid_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuctionServer is the server API for Auction service.
 // All implementations must embed UnimplementedAuctionServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type AuctionServer interface {
 	Election(context.Context, *ElectionRequest) (*Alive, error)
 	Victory(context.Context, *VictoryMessage) (*Alive, error)
 	DoElection(context.Context, *ElectionWarning) (*Empty, error)
+	InternalBid(context.Context, *BidRequest) (*BidAck, error)
 	mustEmbedUnimplementedAuctionServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedAuctionServer) Victory(context.Context, *VictoryMessage) (*Al
 }
 func (UnimplementedAuctionServer) DoElection(context.Context, *ElectionWarning) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoElection not implemented")
+}
+func (UnimplementedAuctionServer) InternalBid(context.Context, *BidRequest) (*BidAck, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InternalBid not implemented")
 }
 func (UnimplementedAuctionServer) mustEmbedUnimplementedAuctionServer() {}
 
@@ -224,6 +239,24 @@ func _Auction_DoElection_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auction_InternalBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuctionServer).InternalBid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auction_InternalBid_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuctionServer).InternalBid(ctx, req.(*BidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auction_ServiceDesc is the grpc.ServiceDesc for Auction service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var Auction_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "doElection",
 			Handler:    _Auction_DoElection_Handler,
+		},
+		{
+			MethodName: "internalBid",
+			Handler:    _Auction_InternalBid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

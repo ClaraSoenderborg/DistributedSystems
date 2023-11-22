@@ -14,9 +14,7 @@ message resultRequest{
 }
 
 message outcomeResponse{
-    int64 highestBid = 1;
-    int64 clientid = 2;
-    string message = 3;
+    string message = 1;
 }
 
 message bidAck{
@@ -42,6 +40,7 @@ service auction{
     rpc election(electionRequest) returns (alive);
     rpc victory(victoryMessage) returns (alive);
     rpc doElection(electionWarning) returns (empty);
+    rpc internalBid(bidRequest) returns (bidAck);
 }
 
 

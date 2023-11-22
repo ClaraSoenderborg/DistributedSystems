@@ -1,0 +1,11 @@
+2023/11/22 11:42:20 could not create the node listen tcp :5000: bind: address already in use
+2023/11/22 11:42:35 started node at port: 5001 
+2023/11/22 11:42:49 started node at port: 5002 
+2023/11/22 11:43:35 Auction is over!
+2023/11/22 11:43:49 Auction is over!
+2023/11/22 11:54:01 could not create the node listen tcp :5000: bind: address already in use
+2023/11/22 11:54:21 started node at port: 5003 
+2023/11/22 11:54:26 started node at port: 5001 
+2023/11/22 11:54:30 started node at port: 5002 
+2023/11/22 11:55:48 started node at port: 5003 
+2023/11/22 11:55:53 started node at port: 5001 
