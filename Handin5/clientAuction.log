@@ -75,3 +75,13 @@
 2023/11/22 12:46:50 result
 2023/11/22 12:46:50 result has been called
 2023/11/22 12:46:50 The auction is over and client 2 won with the highest bid 500
+2023/11/22 12:51:54 Connected to the server at port 5003
+2023/11/22 12:51:58 Input needs to be a bid or a request for a result
+2023/11/22 12:53:06 Connected to the server at port 5003
+2023/11/22 12:55:45 Connected to the server at port 5003
+2023/11/22 12:55:49 Input needs to be a bid or a request for a result
+2023/11/22 12:56:56 Connected to the server at port 5003
+12023/11/22 12:57:19 Connected to the server at port 5003
+12023/11/22 12:57:21 Input needs to be a bid or a request for a result
+Client1: 2023/11/22 12:59:37 Connected to the server at port 5003
+Client 1: 2023/11/22 12:59:48 Connected to the server at port 5003

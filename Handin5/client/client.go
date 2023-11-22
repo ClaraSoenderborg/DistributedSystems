@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"context"
 	"flag"
+	"fmt"
+
 	proto "handin5/grpc"
 	"io"
 	"log"
@@ -37,12 +39,16 @@ func main() {
 	defer logfile.Close()
 	mw := io.MultiWriter(os.Stdout, logfile)
 	log.SetOutput(mw)
+	log.SetPrefix(fmt.Sprint("Client ", *id, ": "))
+
 
 	// Create a client
 	client := &Client{
 		id: *id,
 		leaderPort: *leaderPort,
 	}
+
+	
 
 	go Auction(client)
 
