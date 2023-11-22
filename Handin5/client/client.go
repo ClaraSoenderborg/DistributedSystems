@@ -75,15 +75,11 @@ func Auction(client *Client) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		input := scanner.Text()
-		log.Printf(input)
-		
 		numberMatch, matchErr := regexp.Compile("^[0-9]*$")
 		if (matchErr != nil){
-			log.Printf("numbermatch failed")
 			log.Fatal(matchErr.Error())
 		}
 		if(numberMatch.MatchString(input)) {
-			log.Printf("bid has been called")
 			i, _ := strconv.ParseInt(input, 10, 64)
 			bidMessage, err := serverConnection.Bid(context.Background(), &proto.BidRequest{
 				Clientid: int64(client.id),
@@ -92,10 +88,8 @@ func Auction(client *Client) {
 			if (err != nil){
 				log.Fatal(err.Error())
 			}
-			log.Printf("bid has been called")
 			log.Printf(bidMessage.Outcome)
 		} else if (input == "result") {
-			log.Printf("result has been called")
 			resultMessage, err := serverConnection.Result(context.Background(), &proto.ResultRequest{Clientid: int64(client.id)})
 			if (err != nil){
 				log.Fatal(err.Error())

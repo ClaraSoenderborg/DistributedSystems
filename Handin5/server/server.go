@@ -24,7 +24,6 @@ type Node struct {
 	leader							bool
 	ports							[]int
 	connections						[]proto.AuctionClient
-	bids 							map[int]int
 	highestBid						int
 	highestBidder					int
 	active							bool
@@ -115,7 +114,6 @@ func (node *Node) connectToPeers() error {
 }
 
 func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
-	log.Printf("Big on %d from client %d", in.Bid, in.Clientid)
 	// Exception
 	if(!node.active) {
 		return &proto.BidAck{Outcome: string("The auction has closed")}, nil
@@ -127,7 +125,6 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 	}
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
-	node.bids[int(in.Clientid)] = int(in.Bid)
 
 	for _, conn:= range node.connections{
 		ack, _ := conn.InternalBid(ctx, in)
@@ -154,7 +151,6 @@ func delete(slice []proto.AuctionClient, deletion proto.AuctionClient) []proto.A
 func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
-	node.bids[int(in.Clientid)] = int(in.Bid)
 
 	return &proto.BidAck{Outcome: string("success")}, nil
 }

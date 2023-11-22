@@ -64,3 +64,36 @@
 2023/11/22 12:32:02 started node at port: 5003 
 2023/11/22 12:40:27 started node at port: 5003 
 2023/11/22 12:41:23 Big on 500 from client 1
+2023/11/22 12:42:55 started node at port: 5003 
+2023/11/22 12:42:58 started node at port: 5001 
+2023/11/22 12:43:00 started node at port: 5002 
+2023/11/22 12:43:02 start
+2023/11/22 12:43:02 Connected to the server at port 5001
+2023/11/22 12:43:02 Connected to the server at port 5002
+2023/11/22 12:43:05 start
+2023/11/22 12:43:05 Connected to the server at port 5003
+2023/11/22 12:43:05 Connected to the server at port 5002
+2023/11/22 12:43:08 start
+2023/11/22 12:43:08 Connected to the server at port 5003
+2023/11/22 12:43:08 Connected to the server at port 5001
+2023/11/22 12:43:23 Bid of 6 from client 1
+2023/11/22 12:43:58 Auction is over!
+2023/11/22 12:44:00 Auction is over!
+2023/11/22 12:45:40 started node at port: 5003 
+2023/11/22 12:45:42 started node at port: 5001 
+2023/11/22 12:45:44 started node at port: 5002 
+2023/11/22 12:45:47 start
+2023/11/22 12:45:47 Connected to the server at port 5001
+2023/11/22 12:45:47 Connected to the server at port 5002
+2023/11/22 12:45:50 start
+2023/11/22 12:45:50 Connected to the server at port 5003
+2023/11/22 12:45:50 Connected to the server at port 5002
+2023/11/22 12:45:52 start
+2023/11/22 12:45:52 Connected to the server at port 5003
+2023/11/22 12:45:52 Connected to the server at port 5001
+2023/11/22 12:45:56 Bid of 5 from client 1
+2023/11/22 12:46:02 Bid of 10 from client 1
+2023/11/22 12:46:16 Bid of 500 from client 2
+2023/11/22 12:46:40 Auction is over!
+2023/11/22 12:46:42 Auction is over!
+2023/11/22 12:46:44 Auction is over!

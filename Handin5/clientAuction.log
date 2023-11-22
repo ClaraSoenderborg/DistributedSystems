@@ -39,3 +39,39 @@
 2023/11/22 12:41:23 500
 2023/11/22 12:41:23 bid has been called
 2023/11/22 12:41:23 rpc error: code = Unavailable desc = error reading from server: EOF
+2023/11/22 12:43:13 Connected to the server at port 5003
+2023/11/22 12:43:19 result
+2023/11/22 12:43:19 result has been called
+2023/11/22 12:43:19 The auction is still running and the highest bid is 0
+2023/11/22 12:43:23 6
+2023/11/22 12:43:23 bid has been called
+2023/11/22 12:43:23 rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:57185->[::1]:5003: read: connection reset by peer
+2023/11/22 12:45:55 Connected to the server at port 5003
+2023/11/22 12:45:56 5
+2023/11/22 12:45:56 bid has been called
+2023/11/22 12:45:56 bid has been called
+2023/11/22 12:45:56 Your bid on 5 has been accepted!
+2023/11/22 12:45:59 result
+2023/11/22 12:45:59 result has been called
+2023/11/22 12:45:59 The auction is still running and the highest bid is 5
+2023/11/22 12:46:02 10
+2023/11/22 12:46:02 bid has been called
+2023/11/22 12:46:02 bid has been called
+2023/11/22 12:46:02 Your bid on 10 has been accepted!
+2023/11/22 12:46:04 result
+2023/11/22 12:46:04 result has been called
+2023/11/22 12:46:04 The auction is still running and the highest bid is 10
+2023/11/22 12:46:11 Connected to the server at port 5003
+2023/11/22 12:46:13 result
+2023/11/22 12:46:13 result has been called
+2023/11/22 12:46:13 The auction is still running and the highest bid is 10
+2023/11/22 12:46:16 500
+2023/11/22 12:46:16 bid has been called
+2023/11/22 12:46:16 bid has been called
+2023/11/22 12:46:16 Your bid on 500 has been accepted!
+2023/11/22 12:46:18 result
+2023/11/22 12:46:18 result has been called
+2023/11/22 12:46:18 The auction is still running and the highest bid is 500
+2023/11/22 12:46:50 result
+2023/11/22 12:46:50 result has been called
+2023/11/22 12:46:50 The auction is over and client 2 won with the highest bid 500
