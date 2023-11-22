@@ -20,11 +20,15 @@ import (
 type Client struct {
 	id int
 	leaderPort int
+	backupport1 int
+	backupport2 int
 }
 
 var (
 	leaderPort = flag.Int("port", 0, "server port number")
 	id = flag.Int("id", 0, "client id number")
+	backupport1 = flag.Int("bp1", 0, "backup-port 1")
+	backupport2 = flag.Int("bp2", 0, "backup-port 2")
 )
 
 func main() {
@@ -46,9 +50,9 @@ func main() {
 	client := &Client{
 		id: *id,
 		leaderPort: *leaderPort,
+		backupport1: *backupport1,
+		backupport2: *backupport2,
 	}
-
-	
 
 	go Auction(client)
 
@@ -92,19 +96,44 @@ func Auction(client *Client) {
 				Bid: i,
 			})
 			if (err != nil){
-				log.Fatal(err.Error())
+				warnServer()
+			} else {
+				log.Printf(bidMessage.Outcome)
 			}
-			log.Printf(bidMessage.Outcome)
+
 		} else if (input == "result") {
 			resultMessage, err := serverConnection.Result(context.Background(), &proto.ResultRequest{Clientid: int64(client.id)})
 			if (err != nil){
-				log.Fatal(err.Error())
+				warnServer()
+			} else {
+				log.Printf(resultMessage.Message)
 			}
-			log.Printf(resultMessage.Message)
 			
 		} else {
 			log.Printf("Input needs to be a bid or a request for a result")
 		}
 
+	}
+}
+
+func warnServer() {
+	conn, err := grpc.Dial("localhost:"+strconv.Itoa(*backupport1), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Could not connect to port %d", *backupport1)
+	} else {
+		log.Printf("Connected to the server at port %d\n", *backupport1)
+	}
+	connection := proto.NewAuctionClient(conn)
+	_, erro := connection.DoElection(context.Background(), &proto.ElectionWarning{})
+
+	if erro != nil {
+		conn, err := grpc.Dial("localhost:"+strconv.Itoa(*backupport2), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			log.Fatalf("Could not connect to port %d", *backupport2)
+		} else {
+			log.Printf("Connected to the server at port %d\n", *backupport2)
+		}
+		connection := proto.NewAuctionClient(conn)
+		connection.DoElection(context.Background(), &proto.ElectionWarning{})
 	}
 }

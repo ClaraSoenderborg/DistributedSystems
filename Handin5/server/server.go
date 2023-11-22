@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	proto "handin5/grpc"
@@ -27,6 +28,8 @@ type Node struct {
 	highestBid						int
 	highestBidder					int
 	active							bool
+	alive 							bool
+	port2connection					map[int]proto.AuctionClient
 }
 
 var port = flag.Int("port", 0, "node port number")
@@ -56,6 +59,8 @@ func main(){
 		active: true,
 		highestBid: 0,
 		highestBidder: -1,
+		alive: true,
+		port2connection: make(map[int]proto.AuctionClient),
 	}
 
 	go startNode(node)
@@ -86,13 +91,15 @@ func startNode(node *Node) {
 	}
 }
 
-func runNode (node *Node) {
+func runNode(node *Node) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan(){
 		input := scanner.Text()
 		log.Printf(input)
 		if (input == "start"){
 			node.connectToPeers()
+		} else if (input == "die") {
+			node.alive = false
 		}
 	}
 }
@@ -106,7 +113,7 @@ func (node *Node) connectToPeers() error {
 				log.Printf("Could not connect to port %d", currentport)
 			} else {
 				log.Printf("Connected to the server at port %d\n", currentport)
-				node.connections = append(node.connections, proto.NewAuctionClient(conn))
+				node.port2connection[currentport] = proto.NewAuctionClient(conn)
 			}
 		}
 	}
@@ -114,6 +121,11 @@ func (node *Node) connectToPeers() error {
 }
 
 func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
+	if(!node.alive){
+		return nil, errors.New("I am dead")
+	}
+	
+	
 	// Exception
 	if(!node.active) {
 		return &proto.BidAck{Outcome: string("The auction has closed")}, nil
@@ -126,19 +138,21 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
 
-	for _, conn:= range node.connections{
-		ack, _ := conn.InternalBid(ctx, in)
-		if(ack.Outcome != "success") {
-			node.connections = delete(node.connections, conn)
+	for port, conn := range node.port2connection{
+		_, err := conn.InternalBid(ctx, in)
+		if err != nil {
+			//node.connections = delete(node.connections, conn)
+			delete(node.port2connection, port)
 		}
 	}
+	
 
 	// Success
 	returnString := fmt.Sprintf("Your bid on %d has been accepted!", in.Bid)
 	return &proto.BidAck{Outcome: string(returnString)}, nil
 }
 
-func delete(slice []proto.AuctionClient, deletion proto.AuctionClient) []proto.AuctionClient{
+/* func delete(slice []proto.AuctionClient, deletion proto.AuctionClient) []proto.AuctionClient{
     var index int 
     for i, element := range slice{
         if (element == deletion){
@@ -146,9 +160,12 @@ func delete(slice []proto.AuctionClient, deletion proto.AuctionClient) []proto.A
         }
     }
     return append(slice[:index], slice[index+1:]...)
-}
+} */
 
 func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
+	if(!node.alive){
+		return nil, errors.New("I am dead")
+	}
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
 
@@ -156,10 +173,61 @@ func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto
 }
 
 func (node *Node) Result(ctx context.Context, res *proto.ResultRequest) (*proto.OutcomeResponse, error) {
+	if(!node.alive){
+		return nil, errors.New("I am dead")
+	}
+
+	
 	if(node.active) {
 		activeResult := fmt.Sprintf("The auction is still running and the highest bid is %d", node.highestBid)
 		return &proto.OutcomeResponse{Message: string(activeResult)}, nil
 	} 
 	doneResult := fmt.Sprintf("The auction is over and client %d won with the highest bid %d", node.highestBidder, node.highestBid)
 		return &proto.OutcomeResponse{Message: string(doneResult)}, nil
+}
+
+func (node *Node) doElection(ctx context.Context, ew *proto.ElectionWarning) (*proto.Alive, error) {
+	if(!node.alive){
+		return nil, errors.New("I am dead")
+	}
+	
+	go node.internalDoElection()
+	return &proto.Alive{}, nil
+}
+
+func (node *Node) makeLeader() {
+	grpcNode := grpc.NewServer()
+	node.port = *leaderport
+
+	listener, err := net.Listen("tcp", ":"+strconv.Itoa(node.port))
+
+	if err != nil{
+		log.Fatalf("could not create the node %v", err)
+	}
+	log.Printf("changed node at port: %d \n", node.port)
+
+	proto.RegisterAuctionServer(grpcNode, node)
+	serveError:= grpcNode.Serve(listener)
+	if serveError != nil {
+		log.Fatalf("Could not serve listener")
+	}
+} 
+
+func (node *Node) Election(ctx context.Context, er *proto.ElectionRequest) (*proto.Alive, error) {
+	if (!node.alive || node.port > int(er.Port)) {
+		return nil, errors.New("I withdraw")
+	} 
+	go node.internalDoElection()
+	return &proto.Alive{}, nil
+}
+
+func (node *Node) internalDoElection() {
+	for currentport, conn := range node.port2connection{
+		if(currentport != node.port && currentport > node.port) {
+			_, err := conn.Election(context.Background(), &proto.ElectionRequest{})
+			if err != nil {
+				node.makeLeader()
+			}
+		} 
+	}
 }

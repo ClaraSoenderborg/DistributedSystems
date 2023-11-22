@@ -23,6 +23,7 @@ message bidAck{
 
 
 message electionRequest{
+    int64 port = 1; 
 
 }
 
@@ -39,16 +40,12 @@ service auction{
     rpc result(resultRequest) returns (outcomeResponse);
     rpc election(electionRequest) returns (alive);
     rpc victory(victoryMessage) returns (alive);
-    rpc doElection(electionWarning) returns (empty);
+    rpc doElection(electionWarning) returns (alive);
     rpc internalBid(bidRequest) returns (bidAck);
 }
 
 
     
 message electionWarning{
-
-}
-
-message empty {
 
 }
