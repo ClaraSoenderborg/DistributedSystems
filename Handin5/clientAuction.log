@@ -2,3 +2,40 @@
 2023/11/22 11:43:51 Connected to the server at port 5000
 2023/11/22 11:54:35 Connected to the server at port 5000
 2023/11/22 11:54:38 Connected to the server at port 5000
+2023/11/22 12:06:12 Connected to the server at port 5003
+2023/11/22 12:06:19 Connected to the server at port 5003
+2023/11/22 12:14:09 Connected to the server at port 5003
+2023/11/22 12:14:11 hi
+2023/11/22 12:14:11 Input needs to be a bid or a request for a result
+2023/11/22 12:14:25 500
+2023/11/22 12:15:33 Connected to the server at port 5003
+2023/11/22 12:15:36 resultsss
+2023/11/22 12:15:36 Input needs to be a bid or a request for a result
+2023/11/22 12:19:10 Connected to the server at port 5003
+2023/11/22 12:19:12 hej
+2023/11/22 12:19:12 Input needs to be a bid or a request for a result
+2023/11/22 12:19:14 20
+2023/11/22 12:21:55 Connected to the server at port 5003
+2023/11/22 12:21:57 hej
+2023/11/22 12:21:57 Input needs to be a bid or a request for a result
+2023/11/22 12:21:59 5
+2023/11/22 12:23:55 Connected to the server at port 5003
+2023/11/22 12:23:57 hi
+2023/11/22 12:23:57 Input needs to be a bid or a request for a result
+2023/11/22 12:24:00 5
+2023/11/22 12:24:45 Connected to the server at port 5003
+2023/11/22 12:24:48 2
+2023/11/22 12:24:59 Connected to the server at port 5003
+2023/11/22 12:25:01 result
+2023/11/22 12:27:45 Connected to the server at port 5003
+2023/11/22 12:27:46 5
+2023/11/22 12:32:05 Connected to the server at port 5003
+2023/11/22 12:32:08 500
+2023/11/22 12:32:08 bid has been called
+2023/11/22 12:40:29 Connected to the server at port 5003
+2023/11/22 12:40:34 700
+2023/11/22 12:40:34 bid has been called
+2023/11/22 12:41:22 Connected to the server at port 5003
+2023/11/22 12:41:23 500
+2023/11/22 12:41:23 bid has been called
+2023/11/22 12:41:23 rpc error: code = Unavailable desc = error reading from server: EOF

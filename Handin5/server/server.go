@@ -42,7 +42,7 @@ func main(){
 	// Create seperate logfile
 	logfile, err := os.OpenFile("serverAuction.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil{
-		log.Fatal(err)
+		log.Fatal("Could not open serverAction.log")
 	}
 	defer logfile.Close()
 	mw := io.MultiWriter(os.Stdout, logfile)
@@ -115,6 +115,7 @@ func (node *Node) connectToPeers() error {
 }
 
 func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
+	log.Printf("Big on %d from client %d", in.Bid, in.Clientid)
 	// Exception
 	if(!node.active) {
 		return &proto.BidAck{Outcome: string("The auction has closed")}, nil

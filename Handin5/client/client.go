@@ -32,7 +32,7 @@ func main() {
 	// Create seperate logfile
 	logfile, err := os.OpenFile("clientAuction.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil{
-		log.Fatal(err)
+		log.Fatal("Could not open clientAction.log")
 	}
 	defer logfile.Close()
 	mw := io.MultiWriter(os.Stdout, logfile)
@@ -64,24 +64,44 @@ func connectToServer() (proto.AuctionClient, error) {
 
 func Auction(client *Client) {
 	// Connect to the server
-	serverConnection, _ := connectToServer()
+	serverConnection, connErr := connectToServer()
+	if (connErr != nil){
+		log.Printf("serverconnection failed")
+		log.Fatal(connErr.Error())
+		
+	}
 
 	// Wait for input in the client terminal
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		input := scanner.Text()
-
-		numberMatch, _ := regexp.MatchString("^[0-9]*$", input)
-		if(numberMatch) {
+		log.Printf(input)
+		
+		numberMatch, matchErr := regexp.Compile("^[0-9]*$")
+		if (matchErr != nil){
+			log.Printf("numbermatch failed")
+			log.Fatal(matchErr.Error())
+		}
+		if(numberMatch.MatchString(input)) {
+			log.Printf("bid has been called")
 			i, _ := strconv.ParseInt(input, 10, 64)
-			bidMessage, _ := serverConnection.Bid(context.Background(), &proto.BidRequest{
+			bidMessage, err := serverConnection.Bid(context.Background(), &proto.BidRequest{
 				Clientid: int64(client.id),
 				Bid: i,
-			}, nil)
+			})
+			if (err != nil){
+				log.Fatal(err.Error())
+			}
+			log.Printf("bid has been called")
 			log.Printf(bidMessage.Outcome)
 		} else if (input == "result") {
-			resultMessage, _ := serverConnection.Result(context.Background(), &proto.ResultRequest{Clientid: int64(client.id)}, nil)
+			log.Printf("result has been called")
+			resultMessage, err := serverConnection.Result(context.Background(), &proto.ResultRequest{Clientid: int64(client.id)})
+			if (err != nil){
+				log.Fatal(err.Error())
+			}
 			log.Printf(resultMessage.Message)
+			
 		} else {
 			log.Printf("Input needs to be a bid or a request for a result")
 		}
