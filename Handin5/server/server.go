@@ -204,18 +204,23 @@ func (node *Node) Election(ctx context.Context, er *proto.ElectionRequest) (*pro
 }
 
 func (node *Node) internalDoElection() {
-	log.Printf("Sending election requests")
-	var count int
+	
+	var reqcount int
+	var rescount int
 	for currentport, conn := range node.port2connection{
 		if(currentport != node.port && currentport > node.port) {
-			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			log.Printf("Sending election request to %d", currentport)
+			ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
 			_, err := conn.Election(ctx, &proto.ElectionRequest{Port: int64(node.port)})
+			reqcount = reqcount + 1
 			if err != nil {
-				count =+ 1
+				log.Printf("Error from %d: %s", currentport, err.Error())
+				rescount = rescount + 1
 			}
 		} 
 	}
-	if (count == 2){
+	if (reqcount == rescount){
+		log.Printf("reqcount: %d /// rescount: %d", reqcount, rescount)
 		node.makeLeader()
 	}
 	

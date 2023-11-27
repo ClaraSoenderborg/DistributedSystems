@@ -142,3 +142,39 @@ Client 1: 2023/11/27 15:00:33 Your bid on 5 has been accepted!
 Client 1: 2023/11/27 15:00:40 Connected to the server at port 5001
 Client 1: 2023/11/27 15:00:43 Connected to the server at port 5001
 Client 1: 2023/11/27 15:00:47 Connected to the server at port 5001
+Client 1: 2023/11/27 15:14:16 Connected to the server at port 5003
+Client 1: 2023/11/27 15:14:18 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:14:26 Connected to the server at port 5001
+Client 1: 2023/11/27 15:14:28 Connected to the server at port 5001
+Client 1: 2023/11/27 15:16:03 Connected to the server at port 5001
+Client 1: 2023/11/27 15:20:30 Connected to the server at port 5003
+Client 1: 2023/11/27 15:20:31 Your bid on 10 has been accepted!
+Client 1: 2023/11/27 15:20:37 Connected to the server at port 5001
+Client 1: 2023/11/27 15:20:38 Connected to the server at port 5001
+Client 1: 2023/11/27 15:20:38 rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:5001: connect: connection refused"
+Client 1: 2023/11/27 15:20:38 Connected to the server at port 5002
+Client 1: 2023/11/27 15:21:28 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:21:34 The auction is still running and the highest bid is 600
+Client 1: 2023/11/27 15:22:37 The auction is over and client 1 won with the highest bid 600
+Client 1: 2023/11/27 15:26:28 Connected to the server at port 5003
+Client 1: 2023/11/27 15:26:30 Connected to the server at port 5001
+Client 1: 2023/11/27 15:27:18 Connected to the server at port 5003
+Client 1: 2023/11/27 15:27:19 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:27:26 Connected to the server at port 5001
+Client 1: 2023/11/27 15:27:29 Connected to the server at port 5001
+Client 1: 2023/11/27 15:27:29 rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:5001: connect: connection refused"
+Client 1: 2023/11/27 15:27:29 Connected to the server at port 5002
+Client 1: 2023/11/27 15:27:38 Your bid is not high enough
+Client 1: 2023/11/27 15:28:36 Connected to the server at port 5003
+Client 1: 2023/11/27 15:28:37 Your bid on 500 has been accepted!
+Client 1: 2023/11/27 15:28:44 Connected to the server at port 5001
+Client 1: 2023/11/27 15:33:18 Connected to the server at port 5003
+Client 1: 2023/11/27 15:33:19 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:33:24 Connected to the server at port 5001
+Client 1: 2023/11/27 15:33:26 rpc error: code = Unavailable desc = error reading from server: EOF
+Client 1: 2023/11/27 15:33:26 Connected to the server at port 5002
+Client 1: 2023/11/27 15:35:24 Connected to the server at port 5003
+Client 1: 2023/11/27 15:35:26 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:35:32 Connected to the server at port 5001
+Client 1: 2023/11/27 15:35:42 Your bid on 5000 has been accepted!
+Client 1: 2023/11/27 15:35:44 The auction is still running and the highest bid is 5000

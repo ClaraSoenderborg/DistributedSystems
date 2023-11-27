@@ -92,7 +92,7 @@ func Auction(client *Client) {
 		}
 		if(numberMatch.MatchString(input)) {
 			i, _ := strconv.ParseInt(input, 10, 64)
-			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
 			bidMessage, err := serverConnection.Bid(ctx, &proto.BidRequest{
 				Clientid: int64(client.id),
 				Bid: i,
@@ -104,7 +104,7 @@ func Auction(client *Client) {
 			}
 
 		} else if (input == "result") {
-			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
 			resultMessage, err := serverConnection.Result(ctx, &proto.ResultRequest{Clientid: int64(client.id)})
 			if (err != nil){
 				warnServer()
