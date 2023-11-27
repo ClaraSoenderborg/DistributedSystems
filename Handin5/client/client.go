@@ -12,6 +12,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -91,7 +92,8 @@ func Auction(client *Client) {
 		}
 		if(numberMatch.MatchString(input)) {
 			i, _ := strconv.ParseInt(input, 10, 64)
-			bidMessage, err := serverConnection.Bid(context.Background(), &proto.BidRequest{
+			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			bidMessage, err := serverConnection.Bid(ctx, &proto.BidRequest{
 				Clientid: int64(client.id),
 				Bid: i,
 			})
@@ -102,7 +104,8 @@ func Auction(client *Client) {
 			}
 
 		} else if (input == "result") {
-			resultMessage, err := serverConnection.Result(context.Background(), &proto.ResultRequest{Clientid: int64(client.id)})
+			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			resultMessage, err := serverConnection.Result(ctx, &proto.ResultRequest{Clientid: int64(client.id)})
 			if (err != nil){
 				warnServer()
 			} else {
@@ -125,8 +128,10 @@ func warnServer() {
 	}
 	connection := proto.NewAuctionClient(conn)
 	_, erro := connection.DoElection(context.Background(), &proto.ElectionWarning{})
+	
 
-	if erro != nil {
+	if (erro != nil) {
+		log.Printf(erro.Error())
 		conn, err := grpc.Dial("localhost:"+strconv.Itoa(*backupport2), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Fatalf("Could not connect to port %d", *backupport2)

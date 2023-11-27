@@ -108,3 +108,37 @@ Client 1: 2023/11/22 14:14:02 Connected to the server at port 5002
 Client 1: 2023/11/22 14:14:21 Input needs to be a bid or a request for a result
 Client 1: 2023/11/22 14:14:26 Connected to the server at port 5001
 Client 1: 2023/11/22 14:14:26 Connected to the server at port 5002
+Client 1: 2023/11/27 14:15:00 Connected to the server at port 5003
+Client 1: 2023/11/27 14:15:22 Connected to the server at port 5003
+Client 1: 2023/11/27 14:15:25 Your bid on 500 has been accepted!
+Client 1: 2023/11/27 14:15:26 The auction has closed
+Client 1: 2023/11/27 14:16:41 Connected to the server at port 5003
+Client 1: 2023/11/27 14:16:42 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 14:16:43 Your bid is not high enough
+Client 1: 2023/11/27 14:16:52 Connected to the server at port 5001
+Client 1: 2023/11/27 14:16:52 Connected to the server at port 5002
+Client 1: 2023/11/27 14:19:09 Connected to the server at port 5003
+Client 1: 2023/11/27 14:19:10 Your bid on 500 has been accepted!
+Client 1: 2023/11/27 14:19:20 Connected to the server at port 5001
+Client 1: 2023/11/27 14:19:20 doelection error from backup 1: rpc error: code = Unimplemented desc = method DoElection not implemented
+Client 1: 2023/11/27 14:19:20 Connected to the server at port 5002
+Client 1: 2023/11/27 14:20:39 Connected to the server at port 5003
+Client 1: 2023/11/27 14:20:40 Your bid on 500 has been accepted!
+Client 1: 2023/11/27 14:20:42 Your bid is not high enough
+Client 1: 2023/11/27 14:20:50 Connected to the server at port 5001
+Client 1: 2023/11/27 14:41:20 Connected to the server at port 5003
+Client 1: 2023/11/27 14:41:21 Your bid on 500 has been accepted!
+Client 1: 2023/11/27 14:41:26 Connected to the server at port 5001
+Client 1: 2023/11/27 14:42:12 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 14:52:43 Connected to the server at port 5003
+Client 1: 2023/11/27 14:52:45 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 14:52:51 Connected to the server at port 5001
+Client 1: 2023/11/27 14:52:55 Your bid is not high enough
+Client 1: 2023/11/27 14:52:57 Your bid on 700 has been accepted!
+Client 1: 2023/11/27 14:52:59 The auction is still running and the highest bid is 700
+Client 1: 2023/11/27 14:53:13 The auction is still running and the highest bid is 700
+Client 1: 2023/11/27 15:00:31 Connected to the server at port 5003
+Client 1: 2023/11/27 15:00:33 Your bid on 5 has been accepted!
+Client 1: 2023/11/27 15:00:40 Connected to the server at port 5001
+Client 1: 2023/11/27 15:00:43 Connected to the server at port 5001
+Client 1: 2023/11/27 15:00:47 Connected to the server at port 5001

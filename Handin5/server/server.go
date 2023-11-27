@@ -28,7 +28,6 @@ type Node struct {
 	highestBid						int
 	highestBidder					int
 	active							bool
-	alive 							bool
 	port2connection					map[int]proto.AuctionClient
 }
 
@@ -49,6 +48,7 @@ func main(){
 	defer logfile.Close()
 	mw := io.MultiWriter(os.Stdout, logfile)
 	log.SetOutput(mw)
+	log.SetPrefix(fmt.Sprint("Node ", *port, ": "))
 
 	// Create a server struct
 	node := &Node{
@@ -59,13 +59,12 @@ func main(){
 		active: true,
 		highestBid: 0,
 		highestBidder: -1,
-		alive: true,
 		port2connection: make(map[int]proto.AuctionClient),
 	}
 
 	go startNode(node)
 	go runNode(node)
-	time.Sleep(time.Duration(60*time.Second))
+	time.Sleep(time.Duration(120*time.Second))
 	node.active = false
 	log.Printf("Auction is over!")
 
@@ -98,9 +97,7 @@ func runNode(node *Node) {
 		log.Printf(input)
 		if (input == "start"){
 			node.connectToPeers()
-		} else if (input == "die") {
-			node.alive = false
-		}
+		} 
 	}
 }
 
@@ -121,11 +118,6 @@ func (node *Node) connectToPeers() error {
 }
 
 func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
-	if(!node.alive){
-		return nil, errors.New("I am dead")
-	}
-	
-	
 	// Exception
 	if(!node.active) {
 		return &proto.BidAck{Outcome: string("The auction has closed")}, nil
@@ -163,9 +155,6 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 } */
 
 func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
-	if(!node.alive){
-		return nil, errors.New("I am dead")
-	}
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
 
@@ -173,11 +162,6 @@ func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto
 }
 
 func (node *Node) Result(ctx context.Context, res *proto.ResultRequest) (*proto.OutcomeResponse, error) {
-	if(!node.alive){
-		return nil, errors.New("I am dead")
-	}
-
-	
 	if(node.active) {
 		activeResult := fmt.Sprintf("The auction is still running and the highest bid is %d", node.highestBid)
 		return &proto.OutcomeResponse{Message: string(activeResult)}, nil
@@ -186,11 +170,8 @@ func (node *Node) Result(ctx context.Context, res *proto.ResultRequest) (*proto.
 		return &proto.OutcomeResponse{Message: string(doneResult)}, nil
 }
 
-func (node *Node) doElection(ctx context.Context, ew *proto.ElectionWarning) (*proto.Alive, error) {
-	if(!node.alive){
-		return nil, errors.New("I am dead")
-	}
-	
+func (node *Node) DoElection(ctx context.Context, ew *proto.ElectionWarning) (*proto.Alive, error) {
+	log.Printf("I will call election")
 	go node.internalDoElection()
 	return &proto.Alive{}, nil
 }
@@ -204,7 +185,7 @@ func (node *Node) makeLeader() {
 	if err != nil{
 		log.Fatalf("could not create the node %v", err)
 	}
-	log.Printf("changed node at port: %d \n", node.port)
+	log.Printf("I am leader and I listen to port: %d \n", node.port)
 
 	proto.RegisterAuctionServer(grpcNode, node)
 	serveError:= grpcNode.Serve(listener)
@@ -214,20 +195,28 @@ func (node *Node) makeLeader() {
 } 
 
 func (node *Node) Election(ctx context.Context, er *proto.ElectionRequest) (*proto.Alive, error) {
-	if (!node.alive || node.port > int(er.Port)) {
+	if (node.port < int(er.Port)){
+		log.Print("I withdraw from election")
 		return nil, errors.New("I withdraw")
-	} 
+	}
 	go node.internalDoElection()
 	return &proto.Alive{}, nil
 }
 
 func (node *Node) internalDoElection() {
+	log.Printf("Sending election requests")
+	var count int
 	for currentport, conn := range node.port2connection{
 		if(currentport != node.port && currentport > node.port) {
-			_, err := conn.Election(context.Background(), &proto.ElectionRequest{})
+			ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+			_, err := conn.Election(ctx, &proto.ElectionRequest{Port: int64(node.port)})
 			if err != nil {
-				node.makeLeader()
+				count =+ 1
 			}
 		} 
 	}
+	if (count == 2){
+		node.makeLeader()
+	}
+	
 }
