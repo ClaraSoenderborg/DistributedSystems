@@ -178,3 +178,13 @@ Client 1: 2023/11/27 15:35:26 Your bid on 600 has been accepted!
 Client 1: 2023/11/27 15:35:32 Connected to the server at port 5001
 Client 1: 2023/11/27 15:35:42 Your bid on 5000 has been accepted!
 Client 1: 2023/11/27 15:35:44 The auction is still running and the highest bid is 5000
+Client 1: 2023/11/27 15:42:12 Connected to the server at port 5003
+Client 2: 2023/11/27 15:42:23 Connected to the server at port 5003
+Client 2: 2023/11/27 15:42:24 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 15:42:27 Your bid on 700 has been accepted!
+Client 2: 2023/11/27 15:42:31 Your bid is not high enough
+Client 2: 2023/11/27 15:42:34 The auction is still running and the highest bid is 700
+Client 1: 2023/11/27 15:42:41 Called DoElection on backup replica at 5001
+Client 1: 2023/11/27 15:42:46 Your bid is not high enough
+Client 2: 2023/11/27 15:42:50 Your bid on 800 has been accepted!
+Client 1: 2023/11/27 15:42:54 The auction is still running and the highest bid is 800

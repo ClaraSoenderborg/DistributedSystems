@@ -133,7 +133,7 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 	for port, conn := range node.port2connection{
 		_, err := conn.InternalBid(ctx, in)
 		if err != nil {
-			//node.connections = delete(node.connections, conn)
+			//if node is unresponsive, remove it from list
 			delete(node.port2connection, port)
 		}
 	}
@@ -144,17 +144,8 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 	return &proto.BidAck{Outcome: string(returnString)}, nil
 }
 
-/* func delete(slice []proto.AuctionClient, deletion proto.AuctionClient) []proto.AuctionClient{
-    var index int 
-    for i, element := range slice{
-        if (element == deletion){
-            index = i
-        }
-    }
-    return append(slice[:index], slice[index+1:]...)
-} */
-
 func (node *Node) InternalBid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck, error) {
+	log.Printf("Update highest bid to %d from client %d", in.Bid, in.Clientid)
 	node.highestBid = int(in.Bid)
 	node.highestBidder = int(in.Clientid)
 
@@ -176,6 +167,36 @@ func (node *Node) DoElection(ctx context.Context, ew *proto.ElectionWarning) (*p
 	return &proto.Alive{}, nil
 }
 
+func (node *Node) internalDoElection() {
+	
+	var reqcount int
+	var rescount int
+	for currentport, conn := range node.port2connection{
+		if(currentport != node.port && currentport > node.port) {
+			log.Printf("Sending election request to %d", currentport)
+			ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
+			_, err := conn.Election(ctx, &proto.ElectionRequest{Port: int64(node.port)})
+			reqcount = reqcount + 1
+			if err != nil {
+				rescount = rescount + 1
+			}
+		} 
+	}
+	if (reqcount == rescount){
+		node.makeLeader()
+	}
+	
+}
+
+func (node *Node) Election(ctx context.Context, er *proto.ElectionRequest) (*proto.Alive, error) {
+	if (node.port < int(er.Port)){
+		log.Print("I withdraw from election")
+		return nil, errors.New("I withdraw")
+	}
+	go node.internalDoElection()
+	return &proto.Alive{}, nil
+}
+
 func (node *Node) makeLeader() {
 	grpcNode := grpc.NewServer()
 	node.port = *leaderport
@@ -193,35 +214,3 @@ func (node *Node) makeLeader() {
 		log.Fatalf("Could not serve listener")
 	}
 } 
-
-func (node *Node) Election(ctx context.Context, er *proto.ElectionRequest) (*proto.Alive, error) {
-	if (node.port < int(er.Port)){
-		log.Print("I withdraw from election")
-		return nil, errors.New("I withdraw")
-	}
-	go node.internalDoElection()
-	return &proto.Alive{}, nil
-}
-
-func (node *Node) internalDoElection() {
-	
-	var reqcount int
-	var rescount int
-	for currentport, conn := range node.port2connection{
-		if(currentport != node.port && currentport > node.port) {
-			log.Printf("Sending election request to %d", currentport)
-			ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
-			_, err := conn.Election(ctx, &proto.ElectionRequest{Port: int64(node.port)})
-			reqcount = reqcount + 1
-			if err != nil {
-				log.Printf("Error from %d: %s", currentport, err.Error())
-				rescount = rescount + 1
-			}
-		} 
-	}
-	if (reqcount == rescount){
-		log.Printf("reqcount: %d /// rescount: %d", reqcount, rescount)
-		node.makeLeader()
-	}
-	
-}

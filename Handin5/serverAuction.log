@@ -414,3 +414,20 @@ Node 5002: 2023/11/27 15:35:32 Sending election request to 5003
 Node 5002: 2023/11/27 15:35:32 Error from 5003: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:5003: connect: connection refused"
 Node 5002: 2023/11/27 15:35:32 reqcount: 1 /// rescount: 1
 Node 5002: 2023/11/27 15:35:32 I am leader and I listen to port: 5003 
+Node 5003: 2023/11/27 15:41:51 started node at port: 5003 
+Node 5001: 2023/11/27 15:41:54 started node at port: 5001 
+Node 5002: 2023/11/27 15:41:56 started node at port: 5002 
+Node 5003: 2023/11/27 15:42:00 start
+Node 5003: 2023/11/27 15:42:00 Connected to the server at port 5001
+Node 5003: 2023/11/27 15:42:00 Connected to the server at port 5002
+Node 5001: 2023/11/27 15:42:03 start
+Node 5001: 2023/11/27 15:42:03 Connected to the server at port 5003
+Node 5001: 2023/11/27 15:42:03 Connected to the server at port 5002
+Node 5002: 2023/11/27 15:42:06 start
+Node 5002: 2023/11/27 15:42:06 Connected to the server at port 5003
+Node 5002: 2023/11/27 15:42:06 Connected to the server at port 5001
+Node 5001: 2023/11/27 15:42:41 I will call election
+Node 5001: 2023/11/27 15:42:41 Sending election request to 5003
+Node 5001: 2023/11/27 15:42:41 Sending election request to 5002
+Node 5002: 2023/11/27 15:42:41 Sending election request to 5003
+Node 5002: 2023/11/27 15:42:41 I am leader and I listen to port: 5003 

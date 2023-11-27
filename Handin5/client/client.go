@@ -124,7 +124,7 @@ func warnServer() {
 	if err != nil {
 		log.Fatalf("Could not connect to port %d", *backupport1)
 	} else {
-		log.Printf("Connected to the server at port %d\n", *backupport1)
+		log.Printf("Called DoElection on backup replica at %d\n", *backupport1)
 	}
 	connection := proto.NewAuctionClient(conn)
 	_, erro := connection.DoElection(context.Background(), &proto.ElectionWarning{})
@@ -136,7 +136,7 @@ func warnServer() {
 		if err != nil {
 			log.Fatalf("Could not connect to port %d", *backupport2)
 		} else {
-			log.Printf("Connected to the server at port %d\n", *backupport2)
+			log.Printf("CCalled DoElection on backup replica at %d\n", *backupport2)
 		}
 		connection := proto.NewAuctionClient(conn)
 		connection.DoElection(context.Background(), &proto.ElectionWarning{})
