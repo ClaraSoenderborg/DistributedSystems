@@ -35,7 +35,7 @@ type AuctionClient interface {
 	Result(ctx context.Context, in *ResultRequest, opts ...grpc.CallOption) (*OutcomeResponse, error)
 	Election(ctx context.Context, in *ElectionRequest, opts ...grpc.CallOption) (*Alive, error)
 	Victory(ctx context.Context, in *VictoryMessage, opts ...grpc.CallOption) (*Alive, error)
-	DoElection(ctx context.Context, in *ElectionWarning, opts ...grpc.CallOption) (*Empty, error)
+	DoElection(ctx context.Context, in *ElectionWarning, opts ...grpc.CallOption) (*Alive, error)
 	InternalBid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*BidAck, error)
 }
 
@@ -83,8 +83,8 @@ func (c *auctionClient) Victory(ctx context.Context, in *VictoryMessage, opts ..
 	return out, nil
 }
 
-func (c *auctionClient) DoElection(ctx context.Context, in *ElectionWarning, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *auctionClient) DoElection(ctx context.Context, in *ElectionWarning, opts ...grpc.CallOption) (*Alive, error) {
+	out := new(Alive)
 	err := c.cc.Invoke(ctx, Auction_DoElection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -109,7 +109,7 @@ type AuctionServer interface {
 	Result(context.Context, *ResultRequest) (*OutcomeResponse, error)
 	Election(context.Context, *ElectionRequest) (*Alive, error)
 	Victory(context.Context, *VictoryMessage) (*Alive, error)
-	DoElection(context.Context, *ElectionWarning) (*Empty, error)
+	DoElection(context.Context, *ElectionWarning) (*Alive, error)
 	InternalBid(context.Context, *BidRequest) (*BidAck, error)
 	mustEmbedUnimplementedAuctionServer()
 }
@@ -130,7 +130,7 @@ func (UnimplementedAuctionServer) Election(context.Context, *ElectionRequest) (*
 func (UnimplementedAuctionServer) Victory(context.Context, *VictoryMessage) (*Alive, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Victory not implemented")
 }
-func (UnimplementedAuctionServer) DoElection(context.Context, *ElectionWarning) (*Empty, error) {
+func (UnimplementedAuctionServer) DoElection(context.Context, *ElectionWarning) (*Alive, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoElection not implemented")
 }
 func (UnimplementedAuctionServer) InternalBid(context.Context, *BidRequest) (*BidAck, error) {

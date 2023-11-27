@@ -85,3 +85,26 @@
 12023/11/22 12:57:21 Input needs to be a bid or a request for a result
 Client1: 2023/11/22 12:59:37 Connected to the server at port 5003
 Client 1: 2023/11/22 12:59:48 Connected to the server at port 5003
+Client 1: 2023/11/22 14:03:17 Connected to the server at port 5003
+Client 11: 2023/11/22 14:03:21 Connected to the server at port 5000
+Client 1: 2023/11/22 14:03:25 Your bid on 500 has been accepted!
+Client 11: 2023/11/22 14:03:35 Connected to the server at port 0
+Client 11: 2023/11/22 14:03:35 Connected to the server at port 0
+Client 1: 2023/11/22 14:03:49 Input needs to be a bid or a request for a result
+Client 1: 2023/11/22 14:03:52 The auction is still running and the highest bid is 500
+Client 1: 2023/11/22 14:04:26 Connected to the server at port 0
+Client 1: 2023/11/22 14:04:26 Connected to the server at port 0
+Client 1: 2023/11/22 14:06:00 Connected to the server at port 5003
+Client 1: 2023/11/22 14:06:03 Your bid on 500 has been accepted!
+Client 1: 2023/11/22 14:06:18 Connected to the server at port 5001
+Client 1: 2023/11/22 14:06:18 Connected to the server at port 5002
+Client 1: 2023/11/22 14:12:16 Connected to the server at port 5003
+Client 1: 2023/11/22 14:13:32 Connected to the server at port 5003
+Client 1: 2023/11/22 14:13:34 Your bid on 500 has been accepted!
+Client 1: 2023/11/22 14:13:42 Connected to the server at port 5001
+Client 1: 2023/11/22 14:13:42 Connected to the server at port 5002
+Client 1: 2023/11/22 14:14:02 Connected to the server at port 5001
+Client 1: 2023/11/22 14:14:02 Connected to the server at port 5002
+Client 1: 2023/11/22 14:14:21 Input needs to be a bid or a request for a result
+Client 1: 2023/11/22 14:14:26 Connected to the server at port 5001
+Client 1: 2023/11/22 14:14:26 Connected to the server at port 5002
