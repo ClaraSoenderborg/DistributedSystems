@@ -214,13 +214,11 @@ func (node *Node) internalDoElection() {
 			_, err := conn.Election(ctx, &proto.ElectionRequest{Port: int64(node.port)})
 			reqcount = reqcount + 1
 			if err != nil {
-				log.Printf("Error from %d: %s", currentport, err.Error())
 				rescount = rescount + 1
 			}
 		} 
 	}
 	if (reqcount == rescount){
-		log.Printf("reqcount: %d /// rescount: %d", reqcount, rescount)
 		node.makeLeader()
 	}
 	
