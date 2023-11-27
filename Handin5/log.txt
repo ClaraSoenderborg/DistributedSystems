@@ -1,0 +1,35 @@
+Client 1: 2023/11/27 16:29:26 Connected to the server at port 5003
+Client 2: 2023/11/27 16:29:30 Connected to the server at port 5003
+Client 2: 2023/11/27 16:29:33 Your bid on 600 has been accepted!
+Client 1: 2023/11/27 16:29:36 Your bid is not high enough
+Client 1: 2023/11/27 16:29:39 Your bid on 650 has been accepted!
+Client 1: 2023/11/27 16:29:55 Called DoElection on backup replica at 5001
+Client 1: 2023/11/27 16:29:59 The auction is still running and the highest bid is 650
+Client 2: 2023/11/27 16:30:04 Your bid on 700 has been accepted!
+Client 2: 2023/11/27 16:31:16 The auction is over and client 2 won with the highest bid 700
+Client 1: 2023/11/27 16:31:22 The auction has closed
+
+Node 5003: 2023/11/27 16:29:07 started node at port: 5003 
+Node 5001: 2023/11/27 16:29:10 started node at port: 5001 
+Node 5002: 2023/11/27 16:29:12 started node at port: 5002 
+Node 5003: 2023/11/27 16:29:16 start
+Node 5003: 2023/11/27 16:29:16 Connected to the server at port 5001
+Node 5003: 2023/11/27 16:29:16 Connected to the server at port 5002
+Node 5001: 2023/11/27 16:29:19 start
+Node 5001: 2023/11/27 16:29:19 Connected to the server at port 5003
+Node 5001: 2023/11/27 16:29:19 Connected to the server at port 5002
+Node 5002: 2023/11/27 16:29:21 start
+Node 5002: 2023/11/27 16:29:21 Connected to the server at port 5003
+Node 5002: 2023/11/27 16:29:21 Connected to the server at port 5001
+Node 5001: 2023/11/27 16:29:33 Update highest bid to 600 from client 2
+Node 5002: 2023/11/27 16:29:33 Update highest bid to 600 from client 2
+Node 5001: 2023/11/27 16:29:39 Update highest bid to 650 from client 1
+Node 5002: 2023/11/27 16:29:39 Update highest bid to 650 from client 1
+Node 5001: 2023/11/27 16:29:55 I will call election
+Node 5001: 2023/11/27 16:29:55 Sending election request to 5003
+Node 5001: 2023/11/27 16:29:55 Sending election request to 5002
+Node 5002: 2023/11/27 16:29:55 Sending election request to 5003
+Node 5002: 2023/11/27 16:29:55 I am leader and I listen to port: 5003 
+Node 5001: 2023/11/27 16:30:04 Update highest bid to 700 from client 2
+Node 5001: 2023/11/27 16:31:10 Auction is over!
+Node 5002: 2023/11/27 16:31:12 Auction is over!
