@@ -131,11 +131,14 @@ func (node *Node) Bid(ctx context.Context, in *proto.BidRequest) (*proto.BidAck,
 	node.highestBidder = int(in.Clientid)
 
 	for port, conn := range node.port2connection{
-		_, err := conn.InternalBid(ctx, in)
-		if err != nil {
-			//if node is unresponsive, remove it from list
-			delete(node.port2connection, port)
+		if(port != node.port){
+			_, err := conn.InternalBid(ctx, in)
+			if err != nil {
+				//if node is unresponsive, remove it from list
+				delete(node.port2connection, port)
+			}
 		}
+		
 	}
 	
 
@@ -207,7 +210,7 @@ func (node *Node) makeLeader() {
 		log.Fatalf("could not create the node %v", err)
 	}
 	log.Printf("I am leader and I listen to port: %d \n", node.port)
-
+	
 	proto.RegisterAuctionServer(grpcNode, node)
 	serveError:= grpcNode.Serve(listener)
 	if serveError != nil {
