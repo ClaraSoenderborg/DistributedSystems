@@ -5,7 +5,7 @@ First run 3 servers, in different terminals, where the first will be the primary
 2. Run the backup replica: `go run server/server.go -port 5001 -id 2 -lp 5003 -bp1 5001 -bp2 5002`
 3. Run the backup replica: `go run server/server.go -port 5002 -id 1 -lp 5003 -bp1 5001 -bp2 5002`
 
-
+Run ´start´ in each replica terminal to connect the nodes to each other. 
 
 Then run 2 clients in different terminals
 1. Run client `go run client/client.go -port 5003 -id 1 -bp1 5001 -bp2 5002`
