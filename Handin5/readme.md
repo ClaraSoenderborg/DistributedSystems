@@ -13,4 +13,4 @@ Then run 2 clients in different terminals
 
 To simulate a crash of a node, press `ctrl` + `c` in the first terminal, that is running the primary replica. Next call from a client will now start an election process. 
 
-OBS: send the bid or request again, when connected to the new server to finalize the bid or request. 
+OBS: send the call from client again, when connected to the new server to finalize the bid or request. 
